@@ -7,15 +7,15 @@ import com.nhuszka.robots.geometry.Line;
 import com.nhuszka.robots.robot.Robot;
 import com.nhuszka.robots.robot.RobotLinear;
 import com.nhuszka.robots.robot.RobotRectangular;
-import com.nhuszka.robots.util.Util;
+import com.nhuszka.robots.util.TimeUtil;
 
 import java.util.logging.Logger;
 
-public class StartRobotsConsole {
+public class RobotStarter {
 
-    private static Logger log = Logger.getLogger(StartRobotsConsole.class.getSimpleName());
+    private static Logger log = Logger.getLogger(RobotStarter.class.getSimpleName());
 
-    public static void main(String[] args) {
+    public void startRobots() {
         Box box1 = new Box(
                 new Coordinates(2, 12),
                 new Coordinates(12, 12),
@@ -54,32 +54,32 @@ public class StartRobotsConsole {
         fastRobot1.startMoving();
         fastRobot1.coordinatesFeed()
                 .subscribe(
-                        position -> log.info(String.format("observe coordinates rectangularRobot1 [x: %d, y: %d]%n", position.getX(), position.getY()))
+                        position -> log.info(String.format("observe coordinates rectangularRobot1 [x: %d, y: %d]%n", position.x(), position.y()))
                 );
 
-        Util.waitForMillis(500);
+        TimeUtil.waitForMillis(500);
 
         linearRobot.startMoving();
         linearRobot.coordinatesFeed()
                 .subscribe(
-                        position -> log.info(String.format("observe coordinates linearRobot [x: %d, y: %d]%n", position.getX(), position.getY()))
+                        position -> log.info(String.format("observe coordinates linearRobot [x: %d, y: %d]%n", position.x(), position.y()))
                 );
 
-        Util.waitForMillis(500);
+        TimeUtil.waitForMillis(500);
 
         fastRobot2.startMoving();
         fastRobot2.coordinatesFeed()
                 .subscribe(
-                        position -> log.info(String.format("observe coordinates rectangularRobot2 [x: %d, y: %d]%n", position.getX(), position.getY()))
+                        position -> log.info(String.format("observe coordinates rectangularRobot2 [x: %d, y: %d]%n", position.x(), position.y()))
                 );
 
-        Util.waitFor(10);
+        TimeUtil.waitFor(10);
         log.info("Stopping robot.");
         fastRobot1.stopMoving();
         fastRobot2.stopMoving();
         linearRobot.stopMoving();
 
         log.info("Waiting for program to finish.");
-        Util.waitFor(5);
+        TimeUtil.waitFor(5);
     }
 }

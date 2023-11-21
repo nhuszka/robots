@@ -1,6 +1,6 @@
 package com.nhuszka.robots.util;
 
-public class Util {
+public class TimeUtil {
 
     public static void waitFor(int seconds) {
         try {

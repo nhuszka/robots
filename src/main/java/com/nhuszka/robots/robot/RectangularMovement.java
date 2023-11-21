@@ -9,41 +9,37 @@ import static com.nhuszka.robots.geometry.Direction.*;
 class RectangularMovement {
 
     static boolean isWithinBox(Coordinates coordinate, Box box) {
-        return coordinate.getX() >= box.getBottomLeft().getX()
-                && coordinate.getX() <= box.getBottomRight().getX()
-                &&  coordinate.getY() >= box.getBottomLeft().getY()
-                &&  coordinate.getY() <= box.getTopLeft().getY();
+        return coordinate.x() >= box.bottomLeft().x()
+                && coordinate.x() <= box.bottomRight().x()
+                &&  coordinate.y() >= box.bottomLeft().y()
+                &&  coordinate.y() <= box.topLeft().y();
     }
 
     static Direction getDirection(int distanceToMove, Coordinates coordinates, Direction direction, Box box) {
         boolean shouldTurn = shouldTurn(distanceToMove, coordinates, direction, box);
         if (shouldTurn) {
-            switch (direction) {
-                case NORTH:
-                    return EAST;
-                case EAST:
-                    return SOUTH;
-                case SOUTH:
-                    return Direction.WEST;
-                case WEST:
-                    return NORTH;
-            }
+            return switch (direction) {
+                case NORTH -> EAST;
+                case EAST -> SOUTH;
+                case SOUTH -> Direction.WEST;
+                case WEST -> NORTH;
+            };
         }
         return direction;
     }
 
     private static boolean shouldTurn(int distanceToMove, Coordinates coordinates, Direction direction, Box box) {
-        int x = coordinates.getX();
-        int y = coordinates.getY();
+        int x = coordinates.x();
+        int y = coordinates.y();
 
         boolean reachedEastBorder = direction == EAST
-                && (x + distanceToMove > box.getTopRight().getX());
+                && (x + distanceToMove > box.topRight().x());
         boolean reachedWestBorder = direction == Direction.WEST
-                && (x - distanceToMove < box.getBottomLeft().getX());
+                && (x - distanceToMove < box.bottomLeft().x());
         boolean reachedNorthBorder = direction == NORTH
-                && (y + distanceToMove > box.getTopLeft().getY());
+                && (y + distanceToMove > box.topLeft().y());
         boolean reachedSouthBorder = direction == SOUTH
-                && (y - distanceToMove < box.getBottomRight().getY());
+                && (y - distanceToMove < box.bottomRight().y());
 
         return reachedEastBorder || reachedWestBorder || reachedNorthBorder || reachedSouthBorder;
     }

@@ -6,8 +6,8 @@ import com.nhuszka.robots.geometry.Direction;
 interface Movement {
 
     static Coordinates move(int distance, Coordinates coordinates, Direction direction) {
-        int x = coordinates.getX();
-        int y = coordinates.getY();
+        int x = coordinates.x();
+        int y = coordinates.y();
         switch (direction) {
             case NORTH:
                 y += distance;

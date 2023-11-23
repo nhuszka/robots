@@ -1,0 +1,63 @@
+<html lang="en">
+
+<head>
+    <title></title>
+    <script type="text/javascript">
+        async function logCoordinates() {
+            const response = await fetch('/coordinates');
+            const coordinatesList = await response.json();
+            var coordinatesJson = JSON.stringify(coordinatesList);
+            var coordinatesPrettyJson = JSON.stringify(JSON.parse(coordinatesJson), null, 2);
+            console.log("coordinates: " + coordinatesPrettyJson);
+        }
+
+        async function startRobots() {
+            const response = await fetch('/startRobots');
+            console.log(response);
+        };
+
+        async function displayRobots() {
+            var intervalId = setInterval(function() {
+              drawAllRobots();
+            }, 200);
+
+        };
+
+        async function drawAllRobots() {
+            const response = await fetch('/coordinates');
+            const coordinatesList = await response.json();
+
+            clearCanvas();
+            for (let i = 0; i < coordinatesList.length; ++i) {
+                var coordinates = coordinatesList[i];
+                drawRectangle(coordinates.x, coordinates.y);
+            }
+        }
+
+        async function sleepForMs(ms) {
+            await new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function drawRectangle(x, y) {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            context.fillRect(x, y, 20, 20);
+        }
+
+        function clearCanvas() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            context.clearRect(0,0,500,500);
+        }
+    </script>
+</head>
+
+<body>
+    <h3>Robots</h3>
+    <button onclick="startRobots()">Start robots</button>
+    <button onclick="displayRobots()">Display robots</button>
+    <hr>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+</body>
+
+</html>

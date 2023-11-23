@@ -57,6 +57,7 @@ public abstract class Robot {
     }
 
     public Coordinates getCurrentPosition() {
-        return coordinates.get();
+        Coordinates currentPosition = coordinates.get();
+        return new Coordinates(currentPosition.x(), currentPosition.y());
     }
 }

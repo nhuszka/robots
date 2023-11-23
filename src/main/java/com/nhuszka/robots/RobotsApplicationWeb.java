@@ -8,7 +8,5 @@ public class RobotsApplicationWeb {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RobotsApplicationWeb.class, args);
-		new RobotStarter().startRobots();
 	}
-
 }

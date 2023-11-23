@@ -11,27 +11,48 @@
             console.log("coordinates: " + coordinatesPrettyJson);
         }
 
-        async function startRobots() {
-            const response = await fetch('/startRobots');
+        async function removeAll() {
+            const response = await fetch('/removeRobots');
+            console.log(response);
+        };
+
+        async function stop() {
+            const response = await fetch('/stopRobots');
+            console.log(response);
+        };
+
+        async function demo() {
+            displayRobots();
+            const response = await fetch('/demoRobots');
             console.log(response);
         };
 
         async function displayRobots() {
             var intervalId = setInterval(function() {
               drawAllRobots();
-            }, 200);
-
+            }, 100);
         };
 
         async function drawAllRobots() {
-            const response = await fetch('/coordinates');
-            const coordinatesList = await response.json();
+            const response = await fetch('/robots');
+            const robotsList = await response.json();
+            var robotCoordinatesTextField = document.getElementById('robotCoordinatesTextField');
 
+            var robotCoordinatesText = 'Actual robot coordinates:\n';
             clearCanvas();
-            for (let i = 0; i < coordinatesList.length; ++i) {
-                var coordinates = coordinatesList[i];
-                drawRectangle(coordinates.x, coordinates.y);
+            for (let i = 0; i < robotsList.length; ++i) {
+                var robot = robotsList[i];
+                var x = robot.actualCoordinates.x;
+                var y = robot.actualCoordinates.y;
+
+                drawRectangle(x, y);
+
+                robotCoordinatesText = robotCoordinatesText
+                                            + '\n'
+                                            + '- ' + robot.name + ' [x: ' + x + ', y: ' + y + ']';
             }
+
+            robotCoordinatesTextField.innerHTML = robotCoordinatesText;
         }
 
         async function sleepForMs(ms) {
@@ -41,23 +62,83 @@
         function drawRectangle(x, y) {
             var canvas = document.getElementById("myCanvas");
             var context = canvas.getContext("2d");
-            context.fillRect(x, y, 20, 20);
+            context.fillRect(x, y, 10, 10);
         }
 
         function clearCanvas() {
             var canvas = document.getElementById("myCanvas");
             var context = canvas.getContext("2d");
-            context.clearRect(0,0,500,500);
+            context.clearRect(0 ,0, 500, 500);
         }
+
+        async function add() {
+            var bodyJson = {};
+            bodyJson.type = document.querySelector('input[name="robotType"]:checked').value;
+            bodyJson.name = document.getElementById('robotName').value;
+            bodyJson.startCoordinates = {};
+            bodyJson.startCoordinates.x = document.getElementById('robotStartX').value;;
+            bodyJson.startCoordinates.y = document.getElementById('robotStartY').value;;
+            bodyJson.dimensionOfPath = document.getElementById('robotDimensionOfPath').value;;
+            bodyJson.speed = document.querySelector('input[name="robotSpeed"]:checked').value;
+
+            try {
+                const config = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bodyJson)
+                }
+                const response = await fetch('/addRobot', config);
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        displayRobots();
     </script>
 </head>
 
 <body>
     <h3>Robots</h3>
-    <button onclick="startRobots()">Start robots</button>
-    <button onclick="displayRobots()">Display robots</button>
+    <button onclick="demo()">Demo</button>
+    <button onclick="stop()">Stop</button>
+    <button onclick="removeAll()">Remove all</button>
+    <br>
+    <br>
+    <form>
+        <label>Type:</label><br>
+        <input type="radio" id="rectangular" name="robotType" value="RECTANGULAR" checked="checked">
+        <label for="rectangular">Rectangular</label><br>
+        <input type="radio" id="linear" name="robotType" value="LINEAR">
+        <label for="linear">Linear</label><br>
+
+        <label>Name:</label><br>
+        <input type="text" id="robotName" value="New robot name"><br>
+
+        <input type="radio" id="fast" name="robotSpeed" value="FAST">
+        <label for="fast">Fast</label><br>
+        <input type="radio" id="normal" name="robotSpeed" value="NORMAL" checked="checked">
+        <label for="normal">Normal</label><br>
+        <input type="radio" id="slow" name="robotSpeed" value="SLOW">
+        <label for="slow">Slow</label><br>
+
+        <label>Start coordinate X:</label><br>
+        <input type="number" id="robotStartX" value="40"><br>
+        <label>Start coordinate Y:</label><br>
+        <input type="number" id="robotStartY" value="40"><br>
+        <label>Path dimension length:</label><br>
+        <input type="number" id="robotDimensionOfPath" value="40"><br>
+
+    </form>
+    <button onclick="add()">Add</button>
+
     <hr>
-    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <canvas id="myCanvas" width="700" height="400"></canvas>
+    <hr>
+    <textarea id="robotCoordinatesTextField" style="width: 350px; height: 100px;"></textarea>
 </body>
 
 </html>

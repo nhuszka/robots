@@ -60,4 +60,8 @@ public abstract class Robot {
         Coordinates currentPosition = coordinates.get();
         return new Coordinates(currentPosition.x(), currentPosition.y());
     }
+
+    public String getName() {
+        return name;
+    }
 }
